@@ -1,0 +1,263 @@
+/* Asymmetric 7/5. The claim sits left, the proof sits right. */
+.hero {
+  display: grid;
+  grid-template-columns: 7fr 5fr;
+  gap: var(--sp-9);
+  align-items: start;
+  padding-block: var(--sp-9) var(--sp-8);
+}
+
+.heroText {
+  min-width: 0;
+}
+
+.title {
+  max-width: 15ch;
+}
+
+.lede {
+  margin-top: var(--sp-5);
+  font-size: 1.125rem;
+  max-width: 48ch;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-3);
+  margin-top: var(--sp-6);
+}
+
+.specStrip {
+  margin-top: var(--sp-8);
+  padding-top: var(--sp-4);
+  border-top: 1px solid var(--line);
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+  list-style: none;
+  margin: var(--sp-4) 0 0;
+  padding: 0;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: 5px 10px;
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  background: var(--surface);
+  font-size: var(--fs-sm);
+  font-weight: 500;
+  transition: border-color var(--dur) var(--ease), background var(--dur) var(--ease),
+    transform var(--dur) var(--ease);
+}
+
+.chip:hover {
+  border-color: var(--accent);
+  background: var(--accent-wash);
+  color: var(--accent);
+  transform: translateY(-1px);
+}
+
+.chipNum {
+  color: var(--ink-3);
+  font-size: 0.75rem;
+}
+
+.chip:hover .chipNum {
+  color: var(--accent);
+}
+
+/* --- the record --- */
+
+.recordWrap {
+  position: sticky;
+  top: calc(var(--nav-h) + var(--sp-5));
+}
+
+.recordChrome {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--sp-4);
+  padding-bottom: var(--sp-3);
+}
+
+.recordDate {
+  color: var(--ink-3);
+  font-size: var(--fs-sm);
+}
+
+.record {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow-lg);
+  padding: var(--sp-5);
+}
+
+.recordHead {
+  padding-bottom: var(--sp-4);
+  margin-bottom: var(--sp-2);
+  border-bottom: 1px solid var(--line);
+}
+
+.recordDoctor {
+  font-size: 1.0625rem;
+  letter-spacing: -0.018em;
+}
+
+.recordSpec {
+  margin-top: 2px;
+  font-size: var(--fs-sm);
+  color: var(--ink-3);
+}
+
+.recordLine {
+  padding: var(--sp-3) 0;
+}
+
+.recordLine + .recordLine {
+  border-top: 1px solid var(--line);
+}
+
+.recordLabel {
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+
+.recordValue {
+  margin: 5px 0 0;
+  font-size: var(--fs-sm);
+  line-height: 1.6;
+  color: var(--ink-2);
+}
+
+.recordStrong {
+  color: var(--ink);
+  font-weight: 500;
+}
+
+.recordFoot {
+  margin-top: var(--sp-3);
+  font-size: var(--fs-xs);
+  color: var(--ink-3);
+}
+
+/* --- flow --- */
+
+.flow {
+  padding-block: var(--sp-8);
+  border-top: 1px solid var(--line);
+}
+
+.flowTitle {
+  font-size: var(--fs-h1);
+  max-width: 20ch;
+}
+
+.steps {
+  list-style: none;
+  margin: var(--sp-6) 0 0;
+  padding: 0;
+  display: grid;
+  gap: 0;
+}
+
+.step {
+  display: grid;
+  grid-template-columns: 48px 34px minmax(0, 1fr);
+  gap: var(--sp-4);
+  align-items: start;
+  padding: var(--sp-5) 0;
+  border-top: 1px solid var(--line);
+}
+
+.step:last-child {
+  border-bottom: 1px solid var(--line);
+}
+
+.stepNum {
+  color: var(--ink-3);
+  font-size: var(--fs-sm);
+  padding-top: 2px;
+}
+
+.stepIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: var(--accent-wash);
+}
+
+.stepBody {
+  margin-top: var(--sp-2);
+  color: var(--ink-2);
+  max-width: 62ch;
+  line-height: 1.6;
+}
+
+/* --- close --- */
+
+.close {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--sp-6);
+  flex-wrap: wrap;
+  padding-block: var(--sp-8);
+}
+
+.closeTitle {
+  font-size: var(--fs-h1);
+  max-width: 18ch;
+}
+
+/* --- responsive --- */
+
+@media (max-width: 1000px) {
+  .hero {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--sp-7);
+    padding-block: var(--sp-7) var(--sp-6);
+  }
+
+  .recordWrap {
+    position: static;
+  }
+
+  .title,
+  .lede {
+    max-width: 26ch;
+  }
+
+  .lede {
+    max-width: 54ch;
+  }
+}
+
+@media (max-width: 640px) {
+  .step {
+    grid-template-columns: 34px minmax(0, 1fr);
+    gap: var(--sp-3);
+  }
+
+  .stepNum {
+    display: none;
+  }
+
+  .specStrip {
+    margin-top: var(--sp-6);
+  }
+}

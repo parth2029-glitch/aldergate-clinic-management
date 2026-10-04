@@ -1,0 +1,18 @@
+.state {
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  padding: 3px 9px;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+.stateActive {
+  background: var(--accent-wash);
+  color: var(--accent);
+}
+
+.stateLeave {
+  background: var(--st-pending-wash);
+  color: var(--st-pending);
+}

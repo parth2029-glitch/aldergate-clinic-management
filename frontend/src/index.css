@@ -1,0 +1,581 @@
+/* ============================================================
+   Aldergate Clinic — design system
+   Tokens, base, and the shared primitives every page composes
+   from. Component-specific layout lives in CSS Modules.
+   ============================================================ */
+
+:root {
+  /* Ground and ink — warm neutrals, never pure black */
+  --paper: #faf9f7;
+  --surface: #ffffff;
+  --surface-sunk: #f4f2ed;
+  --ink: #1a1917;
+  --ink-2: #56534c;
+  --ink-3: #6e6a61;
+  --line: #e4e0d8;
+  --line-strong: #cfc9be;
+
+  /* One accent, carrying every action and active state */
+  --accent: #0d5f45;
+  --accent-hover: #0a4e38;
+  --accent-wash: #eaf2ee;
+  --accent-line: #bfd8cd;
+
+  /* Appointment states — each pairs with an icon and a label,
+     never colour alone */
+  --st-pending: #8a5a06;
+  --st-pending-wash: #fbf2e0;
+  --st-confirmed: #0d5f45;
+  --st-confirmed-wash: #eaf2ee;
+  --st-completed: #56534c;
+  --st-completed-wash: #f0eee9;
+  --st-cancelled: #9e2f23;
+  --st-cancelled-wash: #fbebe8;
+
+  /* Depth — offset plus soft blur, tinted to the ground */
+  --shadow-sm: 0 1px 2px rgba(26, 25, 23, 0.05), 0 1px 1px rgba(26, 25, 23, 0.04);
+  --shadow-md: 0 4px 12px -2px rgba(26, 25, 23, 0.08), 0 2px 4px -1px rgba(26, 25, 23, 0.05);
+  --shadow-lg: 0 16px 32px -8px rgba(26, 25, 23, 0.12), 0 4px 8px -2px rgba(26, 25, 23, 0.06);
+
+  --r-sm: 4px;
+  --r: 6px;
+  --r-lg: 10px;
+
+  --sp-1: 4px;
+  --sp-2: 8px;
+  --sp-3: 12px;
+  --sp-4: 16px;
+  --sp-5: 24px;
+  --sp-6: 32px;
+  --sp-7: 48px;
+  --sp-8: 64px;
+  --sp-9: 96px;
+
+  --font: "Satoshi", ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+
+  --fs-display: clamp(2.25rem, 1.55rem + 2.9vw, 3.5rem);
+  --fs-h1: clamp(1.625rem, 1.35rem + 1.2vw, 2.125rem);
+  --fs-h2: 1.375rem;
+  --fs-h3: 1.0625rem;
+  --fs-body: 0.9375rem;
+  --fs-sm: 0.8125rem;
+  --fs-xs: 0.75rem;
+
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --dur: 240ms;
+
+  --shell-w: 1240px;
+  --nav-h: 60px;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  min-height: 100dvh;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font);
+  font-size: var(--fs-body);
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  /* Patient data is not typography-safe: an email address or a compound drug
+     name is one unbreakable token. Without this a single long word widens the
+     layout viewport on a phone and zooms the whole page out. Inherited, so
+     every page gets it once. */
+  overflow-wrap: anywhere;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  margin: 0;
+  font-weight: 700;
+  letter-spacing: -0.022em;
+  line-height: 1.15;
+  text-wrap: balance;
+}
+
+h1 {
+  font-size: var(--fs-h1);
+}
+h2 {
+  font-size: var(--fs-h2);
+}
+h3 {
+  font-size: var(--fs-h3);
+  letter-spacing: -0.012em;
+}
+
+p {
+  margin: 0;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+
+img,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+/* Keyboard focus is always visible; pointer focus is not */
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: var(--r-sm);
+}
+
+::selection {
+  background: var(--accent-wash);
+}
+
+/* ---------- layout ---------- */
+
+.shell {
+  width: 100%;
+  max-width: var(--shell-w);
+  margin-inline: auto;
+  padding-inline: var(--sp-5);
+}
+
+@media (max-width: 640px) {
+  .shell {
+    padding-inline: var(--sp-4);
+  }
+}
+
+.page {
+  padding-block: var(--sp-7) var(--sp-9);
+}
+
+.stack {
+  display: flex;
+  flex-direction: column;
+}
+
+.measure {
+  max-width: 68ch;
+}
+
+/* ---------- type helpers ---------- */
+
+.display {
+  font-size: var(--fs-display);
+  font-weight: 900;
+  letter-spacing: -0.032em;
+  line-height: 1.02;
+  text-wrap: balance;
+}
+
+.lede {
+  font-size: 1.0625rem;
+  color: var(--ink-2);
+  line-height: 1.6;
+  max-width: 62ch;
+}
+
+.muted {
+  color: var(--ink-3);
+}
+
+.num {
+  font-family: var(--mono);
+  font-variant-numeric: tabular-nums;
+  font-size: 0.9em;
+  letter-spacing: -0.01em;
+}
+
+/* Section label — small, tracked, structural. Not an eyebrow above
+   a heading; used to title a region of a working page. */
+.section-label {
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+
+/* "See all" beside a section heading. min-height holds the 24px target
+   floor (WCAG 2.5.8) that 13px text alone does not reach. */
+.link-more {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+  font-size: var(--fs-sm);
+  font-weight: 500;
+  color: var(--accent);
+}
+
+.rule {
+  height: 1px;
+  background: var(--line);
+  border: 0;
+  margin: 0;
+}
+
+/* ---------- buttons ---------- */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-2);
+  padding: 9px 16px;
+  border: 1px solid transparent;
+  border-radius: var(--r);
+  background: transparent;
+  font-size: var(--fs-body);
+  font-weight: 500;
+  letter-spacing: -0.006em;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background var(--dur) var(--ease), border-color var(--dur) var(--ease),
+    color var(--dur) var(--ease), transform var(--dur) var(--ease),
+    box-shadow var(--dur) var(--ease);
+}
+
+.btn:active:not(:disabled) {
+  transform: translateY(1px);
+}
+
+.btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+.btn--primary {
+  background: var(--accent);
+  color: #fff;
+  box-shadow: var(--shadow-sm);
+}
+.btn--primary:hover:not(:disabled) {
+  background: var(--accent-hover);
+}
+
+.btn--secondary {
+  background: var(--surface);
+  border-color: var(--line-strong);
+  color: var(--ink);
+  box-shadow: var(--shadow-sm);
+}
+.btn--secondary:hover:not(:disabled) {
+  border-color: var(--ink-3);
+}
+
+.btn--ghost {
+  color: var(--ink-2);
+}
+.btn--ghost:hover:not(:disabled) {
+  background: var(--surface-sunk);
+  color: var(--ink);
+}
+
+.btn--danger {
+  background: var(--surface);
+  border-color: var(--line-strong);
+  color: var(--st-cancelled);
+}
+.btn--danger:hover:not(:disabled) {
+  background: var(--st-cancelled-wash);
+  border-color: var(--st-cancelled);
+}
+
+.btn--sm {
+  padding: 5px 10px;
+  font-size: var(--fs-sm);
+}
+
+.btn--lg {
+  padding: 12px 22px;
+  font-size: 1rem;
+}
+
+.btn--block {
+  width: 100%;
+}
+
+/* ---------- surfaces ---------- */
+
+/* Used only where elevation is real: a thing that sits above the page. */
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow-sm);
+}
+
+.panel__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--sp-4);
+  padding: var(--sp-4) var(--sp-5);
+  border-bottom: 1px solid var(--line);
+}
+
+.panel__body {
+  padding: var(--sp-5);
+}
+
+/* Hairline-divided list — the default grouping device, in place of cards */
+.rows {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.rows > li + li {
+  border-top: 1px solid var(--line);
+}
+
+.row-link {
+  display: block;
+  padding: var(--sp-4) var(--sp-5);
+  transition: background var(--dur) var(--ease);
+}
+
+.row-link:hover {
+  background: var(--surface-sunk);
+}
+
+/* ---------- status ---------- */
+
+.tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 9px 3px 7px;
+  border-radius: 999px;
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+
+.tag svg {
+  flex: none;
+}
+
+.tag--pending {
+  background: var(--st-pending-wash);
+  color: var(--st-pending);
+}
+.tag--confirmed {
+  background: var(--st-confirmed-wash);
+  color: var(--st-confirmed);
+}
+.tag--completed {
+  background: var(--st-completed-wash);
+  color: var(--st-completed);
+}
+.tag--cancelled {
+  background: var(--st-cancelled-wash);
+  color: var(--st-cancelled);
+}
+
+/* ---------- forms ---------- */
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+
+.field__label {
+  font-size: var(--fs-sm);
+  font-weight: 700;
+  letter-spacing: -0.004em;
+}
+
+.field__control {
+  width: 100%;
+  padding: 9px 12px;
+  background: var(--surface);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--r);
+  transition: border-color var(--dur) var(--ease), box-shadow var(--dur) var(--ease);
+}
+
+.field__control::placeholder {
+  color: var(--ink-3);
+}
+
+.field__control:hover:not(:disabled) {
+  border-color: var(--ink-3);
+}
+
+.field__control:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-wash);
+}
+
+.field__control:disabled {
+  background: var(--surface-sunk);
+  color: var(--ink-3);
+  cursor: not-allowed;
+}
+
+textarea.field__control {
+  min-height: 108px;
+  resize: vertical;
+  line-height: 1.6;
+}
+
+select.field__control {
+  appearance: none;
+  padding-right: 34px;
+  background-image: linear-gradient(45deg, transparent 50%, var(--ink-2) 50%),
+    linear-gradient(135deg, var(--ink-2) 50%, transparent 50%);
+  background-position: calc(100% - 17px) calc(50% + 1px), calc(100% - 12px) calc(50% + 1px);
+  background-size: 5px 5px, 5px 5px;
+  background-repeat: no-repeat;
+  cursor: pointer;
+}
+
+.field__hint {
+  font-size: var(--fs-sm);
+  color: var(--ink-3);
+}
+
+.field__error {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--fs-sm);
+  font-weight: 500;
+  color: var(--st-cancelled);
+}
+
+.field--invalid .field__control {
+  border-color: var(--st-cancelled);
+}
+.field--invalid .field__control:focus {
+  box-shadow: 0 0 0 3px var(--st-cancelled-wash);
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--sp-4) var(--sp-4);
+}
+
+.form-grid > .field--wide {
+  grid-column: 1 / -1;
+}
+
+@media (max-width: 640px) {
+  .form-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* ---------- loading ---------- */
+
+.skeleton {
+  position: relative;
+  overflow: hidden;
+  background: var(--surface-sunk);
+  border-radius: var(--r-sm);
+}
+
+.skeleton::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.7),
+    transparent
+  );
+  animation: shimmer 1.4s infinite;
+}
+
+@keyframes shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+/* ---------- entrance ---------- */
+
+/* One authored moment: content settles in on load, staggered by
+   --i. Elements are visible by default so a failed animation never
+   hides content. */
+@keyframes settle {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+
+.settle {
+  animation: settle 520ms var(--ease) backwards;
+  animation-delay: calc(var(--i, 0) * 55ms);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ---------- utility ---------- */
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.skip-link {
+  position: absolute;
+  left: var(--sp-4);
+  top: -60px;
+  z-index: 60;
+  padding: 10px 16px;
+  background: var(--accent);
+  color: #fff;
+  border-radius: var(--r);
+  font-weight: 500;
+  transition: top var(--dur) var(--ease);
+}
+
+.skip-link:focus {
+  top: var(--sp-3);
+}

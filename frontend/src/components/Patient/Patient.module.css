@@ -1,0 +1,442 @@
+/* --- doctor list --- */
+
+.docRow {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: var(--sp-4);
+  align-items: center;
+  padding: var(--sp-4) var(--sp-5);
+  transition: background var(--dur) var(--ease);
+}
+
+.docRow:hover {
+  background: var(--surface-sunk);
+}
+
+.docName {
+  font-weight: 700;
+  letter-spacing: -0.014em;
+}
+
+.docMeta {
+  margin-top: 3px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-1) var(--sp-3);
+  font-size: var(--fs-sm);
+  color: var(--ink-3);
+}
+
+.docSpec {
+  color: var(--accent);
+  font-weight: 500;
+}
+
+.docTrail {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-5);
+  flex: none;
+}
+
+.nextSlot {
+  text-align: right;
+}
+
+.nextSlotLabel {
+  display: block;
+  font-size: var(--fs-xs);
+  color: var(--ink-3);
+}
+
+.nextSlotValue {
+  display: block;
+  margin-top: 1px;
+  font-weight: 500;
+}
+
+.full {
+  color: var(--st-pending);
+}
+
+.arrow {
+  color: var(--ink-3);
+  transition: transform var(--dur) var(--ease), color var(--dur) var(--ease);
+}
+
+.docRow:hover .arrow {
+  transform: translateX(3px);
+  color: var(--accent);
+}
+
+@media (max-width: 700px) {
+  .docRow {
+    grid-template-columns: auto minmax(0, 1fr);
+    row-gap: var(--sp-3);
+  }
+
+  .docTrail {
+    grid-column: 1 / -1;
+    justify-content: space-between;
+  }
+
+  .nextSlot {
+    text-align: left;
+  }
+}
+
+/* --- doctor detail --- */
+
+.detailHead {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--sp-4);
+}
+
+.detailName {
+  font-size: var(--fs-h1);
+  letter-spacing: -0.028em;
+}
+
+.detailSpec {
+  margin-top: var(--sp-2);
+  color: var(--accent);
+  font-weight: 500;
+}
+
+.about {
+  margin-top: var(--sp-5);
+  color: var(--ink-2);
+  line-height: 1.68;
+  max-width: 62ch;
+}
+
+.sectionTitle {
+  margin-top: var(--sp-7);
+  padding-top: var(--sp-5);
+  border-top: 1px solid var(--line);
+  font-size: var(--fs-h2);
+}
+
+/* --- slots --- */
+
+.slotGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(88px, 1fr));
+  gap: var(--sp-2);
+  margin-top: var(--sp-4);
+}
+
+.slot {
+  padding: 9px 6px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--r);
+  background: var(--surface);
+  font-family: var(--mono);
+  font-variant-numeric: tabular-nums;
+  font-size: var(--fs-sm);
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  cursor: pointer;
+  transition: border-color var(--dur) var(--ease), background var(--dur) var(--ease),
+    color var(--dur) var(--ease), transform var(--dur) var(--ease);
+}
+
+.slot:hover:not(:disabled) {
+  border-color: var(--accent);
+  color: var(--accent);
+  transform: translateY(-1px);
+}
+
+.slot:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.slotOn {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+
+.slotOn:hover:not(:disabled) {
+  background: var(--accent-hover);
+  color: #fff;
+}
+
+.slotOff {
+  background: var(--surface-sunk);
+  color: var(--ink-3);
+  cursor: not-allowed;
+  text-decoration: line-through;
+  text-decoration-thickness: 1px;
+}
+
+/* --- day picker --- */
+
+.days {
+  display: flex;
+  gap: var(--sp-2);
+  margin-top: var(--sp-4);
+  overflow-x: auto;
+  padding-bottom: var(--sp-2);
+}
+
+.day {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  min-width: 62px;
+  padding: 9px 8px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--r);
+  background: var(--surface);
+  cursor: pointer;
+  flex: none;
+  transition: border-color var(--dur) var(--ease), background var(--dur) var(--ease),
+    color var(--dur) var(--ease);
+}
+
+.day:hover:not(:disabled) {
+  border-color: var(--accent);
+}
+
+.dayOn {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+
+.dayOff {
+  background: var(--surface-sunk);
+  color: var(--ink-3);
+  cursor: not-allowed;
+}
+
+.dayName {
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.dayNum {
+  font-family: var(--mono);
+  font-size: 1rem;
+  font-weight: 500;
+  letter-spacing: -0.03em;
+}
+
+/* --- booking summary --- */
+
+.summaryRow {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--sp-4);
+  padding: 10px 0;
+  font-size: var(--fs-sm);
+}
+
+.summaryRow + .summaryRow {
+  border-top: 1px solid var(--line);
+}
+
+.summaryLabel {
+  color: var(--ink-3);
+}
+
+.summaryValue {
+  font-weight: 500;
+  text-align: right;
+}
+
+.pending {
+  color: var(--ink-3);
+  font-weight: 400;
+}
+
+/* --- dashboard --- */
+
+.nextCard {
+  background: var(--accent);
+  color: #fff;
+  border-radius: var(--r-lg);
+  padding: var(--sp-5);
+  box-shadow: var(--shadow-md);
+}
+
+.nextLabel {
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.nextWhen {
+  margin-top: var(--sp-3);
+  font-family: var(--mono);
+  font-size: 1.75rem;
+  font-weight: 500;
+  letter-spacing: -0.04em;
+  line-height: 1.1;
+}
+
+.nextWho {
+  margin-top: var(--sp-3);
+  font-weight: 700;
+  font-size: 1.0625rem;
+  letter-spacing: -0.016em;
+}
+
+.nextWhere {
+  margin-top: 3px;
+  font-size: var(--fs-sm);
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.nextActions {
+  display: flex;
+  gap: var(--sp-2);
+  margin-top: var(--sp-5);
+  padding-top: var(--sp-4);
+  border-top: 1px solid rgba(255, 255, 255, 0.22);
+}
+
+.nextBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 13px;
+  border-radius: var(--r);
+  border: 1px solid rgba(255, 255, 255, 0.34);
+  color: #fff;
+  font-size: var(--fs-sm);
+  font-weight: 500;
+  cursor: pointer;
+  background: transparent;
+  transition: background var(--dur) var(--ease);
+}
+
+.nextBtn:hover {
+  background: rgba(255, 255, 255, 0.14);
+}
+
+/* --- appointment rows --- */
+
+.apptRow {
+  display: grid;
+  grid-template-columns: 92px minmax(0, 1fr) auto;
+  gap: var(--sp-4);
+  align-items: center;
+  padding: var(--sp-4) var(--sp-5);
+  transition: background var(--dur) var(--ease);
+}
+
+.apptRow:hover {
+  background: var(--surface-sunk);
+}
+
+.apptWhen {
+  font-family: var(--mono);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.03em;
+}
+
+.apptDate {
+  display: block;
+  font-size: var(--fs-sm);
+  font-weight: 500;
+}
+
+.apptTime {
+  display: block;
+  font-size: var(--fs-xs);
+  color: var(--ink-3);
+  margin-top: 1px;
+}
+
+.apptWho {
+  font-weight: 500;
+  letter-spacing: -0.01em;
+}
+
+.apptReason {
+  margin-top: 2px;
+  font-size: var(--fs-sm);
+  color: var(--ink-3);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@media (max-width: 640px) {
+  .apptRow {
+    grid-template-columns: minmax(0, 1fr) auto;
+    row-gap: var(--sp-2);
+  }
+
+  .apptWhen {
+    grid-column: 1 / -1;
+    display: flex;
+    gap: var(--sp-2);
+    align-items: baseline;
+  }
+
+  .apptTime {
+    margin-top: 0;
+  }
+
+  .apptReason {
+    white-space: normal;
+  }
+}
+
+/* --- tabs --- */
+
+.tabs {
+  display: flex;
+  gap: var(--sp-1);
+  border-bottom: 1px solid var(--line);
+  margin-bottom: var(--sp-5);
+  overflow-x: auto;
+}
+
+.tab {
+  position: relative;
+  padding: 9px 13px;
+  border: 0;
+  background: transparent;
+  font-size: var(--fs-sm);
+  font-weight: 500;
+  color: var(--ink-3);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: color var(--dur) var(--ease);
+}
+
+.tab:hover {
+  color: var(--ink);
+}
+
+.tabOn {
+  color: var(--accent);
+}
+
+.tabOn::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 2px;
+  background: var(--accent);
+  border-radius: 1px;
+}
+
+.tabCount {
+  margin-left: 6px;
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  color: var(--ink-3);
+}

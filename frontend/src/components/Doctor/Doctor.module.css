@@ -1,0 +1,351 @@
+/* --- schedule rows --- */
+
+.slotRow {
+  display: grid;
+  grid-template-columns: 58px auto minmax(0, 1fr) auto;
+  gap: var(--sp-4);
+  align-items: center;
+  padding: var(--sp-4) var(--sp-5);
+  transition: background var(--dur) var(--ease);
+}
+
+.slotRow:hover {
+  background: var(--surface-sunk);
+}
+
+.slotTime {
+  font-family: var(--mono);
+  font-variant-numeric: tabular-nums;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  letter-spacing: -0.03em;
+}
+
+.slotCancelled .slotTime,
+.slotCancelled .patientName {
+  color: var(--ink-3);
+  text-decoration: line-through;
+  text-decoration-thickness: 1px;
+}
+
+.patientName {
+  font-weight: 700;
+  letter-spacing: -0.012em;
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  flex-wrap: wrap;
+}
+
+.patientAge {
+  font-family: var(--mono);
+  font-size: var(--fs-xs);
+  font-weight: 400;
+  color: var(--ink-3);
+}
+
+.slotReason {
+  margin-top: 2px;
+  font-size: var(--fs-sm);
+  color: var(--ink-3);
+}
+
+.slotTrail {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-4);
+  flex: none;
+}
+
+.newPatient {
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--st-pending);
+  background: var(--st-pending-wash);
+  padding: 2px 7px;
+  border-radius: 999px;
+}
+
+.lastSeen {
+  font-size: var(--fs-xs);
+  color: var(--ink-3);
+  text-align: right;
+}
+
+@media (max-width: 760px) {
+  .slotRow {
+    grid-template-columns: 58px minmax(0, 1fr);
+    row-gap: var(--sp-3);
+  }
+
+  .slotTrail {
+    grid-column: 1 / -1;
+    justify-content: space-between;
+  }
+
+  .lastSeen {
+    text-align: left;
+  }
+}
+
+/* --- day header --- */
+
+.dayHead {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--sp-4);
+  padding: var(--sp-3) var(--sp-5);
+  background: var(--surface-sunk);
+  border-bottom: 1px solid var(--line);
+  position: sticky;
+  top: var(--nav-h);
+  z-index: 2;
+}
+
+.dayHeadDate {
+  font-size: var(--fs-sm);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.dayHeadCount {
+  font-size: var(--fs-xs);
+  color: var(--ink-3);
+}
+
+/* --- counters, unboxed --- */
+
+.counters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  margin-bottom: var(--sp-6);
+}
+
+.counter {
+  padding: var(--sp-4) var(--sp-5) var(--sp-4) 0;
+  min-width: 132px;
+}
+
+.counter + .counter {
+  padding-left: var(--sp-5);
+  border-left: 1px solid var(--line);
+}
+
+.counterValue {
+  font-family: var(--mono);
+  font-size: 1.625rem;
+  font-weight: 500;
+  letter-spacing: -0.04em;
+  line-height: 1;
+}
+
+.counterLabel {
+  margin-top: 6px;
+  font-size: var(--fs-sm);
+  color: var(--ink-3);
+}
+
+/* --- patient history --- */
+
+.historyHead {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--sp-4);
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.historyName {
+  font-size: var(--fs-h1);
+  letter-spacing: -0.028em;
+}
+
+.historyMeta {
+  margin-top: var(--sp-2);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-1) var(--sp-4);
+  font-size: var(--fs-sm);
+  color: var(--ink-3);
+}
+
+/* Each consultation. Collapsed shows date and diagnosis — the two things a
+   doctor needs mid-consultation. Expanding fills in the rest. */
+.entry {
+  border-top: 1px solid var(--line);
+}
+
+.entry:last-child {
+  border-bottom: 1px solid var(--line);
+}
+
+.entryButton {
+  display: grid;
+  grid-template-columns: 104px minmax(0, 1fr) auto;
+  gap: var(--sp-4);
+  align-items: baseline;
+  width: 100%;
+  padding: var(--sp-4) var(--sp-2);
+  border: 0;
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+  transition: background var(--dur) var(--ease);
+}
+
+.entryButton:hover {
+  background: var(--surface-sunk);
+}
+
+.entryDate {
+  font-family: var(--mono);
+  font-variant-numeric: tabular-nums;
+  font-size: var(--fs-sm);
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  color: var(--ink-2);
+}
+
+.entryDiagnosis {
+  font-weight: 700;
+  letter-spacing: -0.014em;
+}
+
+/* Its own line under the diagnosis. As an inline span it butted straight
+   against the diagnosis text and the margin did nothing. */
+.entryDoctor {
+  display: block;
+  margin-top: 3px;
+  font-size: var(--fs-sm);
+  color: var(--ink-3);
+}
+
+.entryCaret {
+  color: var(--ink-3);
+  transition: transform var(--dur) var(--ease);
+  align-self: center;
+}
+
+.entryCaretOpen {
+  transform: rotate(180deg);
+}
+
+/* 128px = the button's 8px padding + its 104px date column + the 16px gap,
+   so the expanded fields line up with the diagnosis above them. */
+.entryBody {
+  padding: 0 var(--sp-2) var(--sp-5) 128px;
+  display: grid;
+  gap: var(--sp-4);
+  animation: unfold 320ms var(--ease);
+}
+
+@keyframes unfold {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+}
+
+.entryField {
+  display: grid;
+  gap: 4px;
+}
+
+.entryLabel {
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+
+.entryText {
+  color: var(--ink-2);
+  line-height: 1.65;
+  max-width: 74ch;
+  font-size: var(--fs-sm);
+}
+
+.rxList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 4px;
+}
+
+.rxItem {
+  font-family: var(--mono);
+  font-size: var(--fs-sm);
+  color: var(--ink);
+  padding: 5px 10px;
+  background: var(--surface-sunk);
+  border-radius: var(--r-sm);
+  width: fit-content;
+  max-width: 100%;
+}
+
+.followUp {
+  padding: var(--sp-3) var(--sp-4);
+  background: var(--accent-wash);
+  border-radius: var(--r);
+  color: var(--accent);
+  font-size: var(--fs-sm);
+  line-height: 1.6;
+  max-width: 74ch;
+}
+
+@media (max-width: 700px) {
+  .entryButton {
+    grid-template-columns: minmax(0, 1fr) auto;
+    row-gap: 2px;
+  }
+
+  .entryDate {
+    grid-column: 1 / -1;
+  }
+
+  .entryBody {
+    padding-left: var(--sp-2);
+  }
+}
+
+/* --- consultation form --- */
+
+.rxRow {
+  display: flex;
+  gap: var(--sp-2);
+  align-items: flex-start;
+}
+
+.rxRow .field {
+  flex: 1;
+}
+
+.priorStrip {
+  padding: var(--sp-4);
+  background: var(--surface-sunk);
+  border: 1px solid var(--line);
+  border-radius: var(--r);
+  margin-bottom: var(--sp-5);
+}
+
+.priorLabel {
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+
+.priorBody {
+  margin-top: var(--sp-2);
+  font-size: var(--fs-sm);
+  color: var(--ink-2);
+  line-height: 1.6;
+}

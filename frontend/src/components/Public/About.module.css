@@ -1,0 +1,29 @@
+.title {
+  font-size: var(--fs-display);
+  font-weight: 900;
+  letter-spacing: -0.032em;
+  line-height: 1.05;
+  max-width: 17ch;
+}
+
+.prose {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+  margin-top: var(--sp-5);
+  max-width: 66ch;
+  color: var(--ink-2);
+  line-height: 1.68;
+  font-size: 1rem;
+}
+
+.sub {
+  margin-top: var(--sp-7);
+  padding-top: var(--sp-5);
+  border-top: 1px solid var(--line);
+  font-size: var(--fs-h2);
+}
+
+.prose + div {
+  margin-top: var(--sp-6);
+}

@@ -1,0 +1,19 @@
+# Environment and secrets
+.env
+.env*.local
+
+# Node
+node_modules/
+
+# Maven / Build
+target/
+dist/
+
+# Logs
+*.log
+
+# OS & Editors
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/

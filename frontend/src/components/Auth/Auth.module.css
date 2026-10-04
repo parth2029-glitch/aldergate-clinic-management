@@ -1,0 +1,106 @@
+.wrap {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 380px;
+  gap: var(--sp-8);
+  align-items: start;
+  padding-block: var(--sp-8) var(--sp-9);
+}
+
+.form {
+  max-width: 460px;
+}
+
+.title {
+  font-size: var(--fs-h1);
+  letter-spacing: -0.028em;
+}
+
+.sub {
+  margin-top: var(--sp-3);
+  color: var(--ink-2);
+  max-width: 46ch;
+  line-height: 1.6;
+}
+
+.fields {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+  margin-top: var(--sp-6);
+}
+
+.submit {
+  margin-top: var(--sp-6);
+}
+
+.alt {
+  margin-top: var(--sp-5);
+  padding-top: var(--sp-5);
+  border-top: 1px solid var(--line);
+  font-size: var(--fs-sm);
+  color: var(--ink-2);
+}
+
+.alt a {
+  color: var(--accent);
+  font-weight: 500;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+/* Right-hand context column — quiet, informational, never a second form. */
+.aside {
+  position: sticky;
+  top: calc(var(--nav-h) + var(--sp-5));
+  padding: var(--sp-5);
+  background: var(--surface-sunk);
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+}
+
+.asideTitle {
+  font-size: var(--fs-h3);
+}
+
+.asideList {
+  list-style: none;
+  margin: var(--sp-4) 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+}
+
+.asideItem {
+  display: flex;
+  gap: var(--sp-3);
+  font-size: var(--fs-sm);
+  color: var(--ink-2);
+  line-height: 1.55;
+}
+
+.asideItem svg {
+  flex: none;
+  margin-top: 2px;
+}
+
+.demoBox {
+  margin-top: var(--sp-5);
+  padding-top: var(--sp-4);
+  border-top: 1px solid var(--line-strong);
+  font-size: var(--fs-xs);
+  color: var(--ink-3);
+  line-height: 1.6;
+}
+
+@media (max-width: 940px) {
+  .wrap {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--sp-6);
+    padding-block: var(--sp-6) var(--sp-8);
+  }
+
+  .aside {
+    position: static;
+  }
+}

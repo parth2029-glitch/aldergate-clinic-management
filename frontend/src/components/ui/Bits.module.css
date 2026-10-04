@@ -1,0 +1,143 @@
+.monogram {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  border-radius: 50%;
+  border: 1px solid;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  user-select: none;
+}
+
+/* --- page head --- */
+
+.head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--sp-5);
+  flex-wrap: wrap;
+  margin-bottom: var(--sp-6);
+}
+
+.headText {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  min-width: 0;
+}
+
+.headActions {
+  display: flex;
+  gap: var(--sp-3);
+  flex-wrap: wrap;
+}
+
+.meta {
+  font-size: var(--fs-sm);
+  color: var(--ink-3);
+}
+
+/* --- empty --- */
+
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--sp-3);
+  padding: var(--sp-7) var(--sp-5);
+  max-width: 46ch;
+}
+
+.emptyTitle {
+  font-size: var(--fs-h3);
+}
+
+.emptyBody {
+  color: var(--ink-2);
+  font-size: var(--fs-sm);
+  line-height: 1.6;
+}
+
+.empty > :last-child {
+  margin-top: var(--sp-2);
+}
+
+/* --- facts --- */
+
+.facts {
+  margin: 0;
+  display: grid;
+  gap: 0;
+}
+
+.fact {
+  display: grid;
+  grid-template-columns: 150px minmax(0, 1fr);
+  gap: var(--sp-4);
+  padding: 11px 0;
+}
+
+.fact + .fact {
+  border-top: 1px solid var(--line);
+}
+
+.factLabel {
+  font-size: var(--fs-sm);
+  color: var(--ink-3);
+}
+
+.factValue {
+  margin: 0;
+  font-weight: 500;
+}
+
+@media (max-width: 560px) {
+  .fact {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 2px;
+  }
+}
+
+/* --- notice --- */
+
+.notice {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--sp-3);
+  padding: var(--sp-3) var(--sp-4);
+  border-radius: var(--r);
+  border: 1px solid;
+  font-size: var(--fs-sm);
+  line-height: 1.55;
+}
+
+.notice svg {
+  flex: none;
+  margin-top: 1px;
+}
+
+.notice--info {
+  background: var(--surface-sunk);
+  border-color: var(--line);
+  color: var(--ink-2);
+}
+
+.notice--accent {
+  background: var(--accent-wash);
+  border-color: var(--accent-line);
+  color: var(--accent);
+}
+
+.notice--warn {
+  background: var(--st-pending-wash);
+  border-color: #ecd9a8;
+  color: var(--st-pending);
+}
+
+.notice--error {
+  background: var(--st-cancelled-wash);
+  border-color: #eec4bd;
+  color: var(--st-cancelled);
+}

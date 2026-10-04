@@ -1,0 +1,20 @@
+spring:
+  profiles:
+    active: dev
+  data:
+    mongodb:
+      # No localhost default on purpose: this project must always point at the
+      # Atlas cluster. MONGODB_URI is supplied by backend/.env (see .env.example).
+      # A missing value now fails startup instead of silently using a local/Docker mongod.
+      uri: ${MONGODB_URI}
+      auto-index-creation: true
+
+jwt:
+  # No default on purpose: JWT_SECRET must come from backend/.env (see .env.example)
+  # or the environment. A missing value fails startup instead of silently
+  # signing tokens with a key that lives in git history.
+  secret: ${JWT_SECRET}
+  expiration: 86400000
+
+server:
+  port: 8080

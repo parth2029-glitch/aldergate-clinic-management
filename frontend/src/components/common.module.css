@@ -1,0 +1,143 @@
+/* Layout patterns shared across pages. Component-specific styling stays
+   in each component's own module. */
+
+/* Main column plus a narrower aside. */
+.split {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 340px;
+  gap: var(--sp-6);
+  align-items: start;
+}
+
+.splitWide {
+  grid-template-columns: minmax(0, 1fr) 400px;
+}
+
+.asideSticky {
+  position: sticky;
+  top: calc(var(--nav-h) + var(--sp-5));
+}
+
+@media (max-width: 940px) {
+  .split,
+  .splitWide {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .asideSticky {
+    position: static;
+  }
+}
+
+/* Filter / search bar above a list. */
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-3);
+  padding-bottom: var(--sp-4);
+  margin-bottom: var(--sp-2);
+}
+
+.toolbarSearch {
+  flex: 1 1 240px;
+  min-width: 0;
+}
+
+.toolbarCount {
+  font-size: var(--fs-sm);
+  color: var(--ink-3);
+  margin-left: auto;
+}
+
+/* A person row: monogram, identity, meta, trailing action. */
+.personRow {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: var(--sp-4);
+  align-items: center;
+}
+
+.personIdentity {
+  min-width: 0;
+}
+
+.personName {
+  font-weight: 700;
+  letter-spacing: -0.012em;
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  flex-wrap: wrap;
+}
+
+.personMeta {
+  margin-top: 2px;
+  font-size: var(--fs-sm);
+  color: var(--ink-3);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-1) var(--sp-3);
+}
+
+.personTrail {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-4);
+  flex: none;
+}
+
+@media (max-width: 640px) {
+  .personRow {
+    grid-template-columns: auto minmax(0, 1fr);
+    row-gap: var(--sp-3);
+  }
+
+  .personTrail {
+    grid-column: 1 / -1;
+    justify-content: space-between;
+  }
+}
+
+/* Time column used in schedules. */
+.timeCell {
+  font-family: var(--mono);
+  font-variant-numeric: tabular-nums;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  flex: none;
+  width: 52px;
+}
+
+/* Form page shell. */
+.formPage {
+  max-width: 620px;
+}
+
+.formActions {
+  display: flex;
+  gap: var(--sp-3);
+  flex-wrap: wrap;
+  padding-top: var(--sp-5);
+  margin-top: var(--sp-5);
+  border-top: 1px solid var(--line);
+}
+
+/* Back link above a detail page heading. */
+.back {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+  gap: 6px;
+  font-size: var(--fs-sm);
+  font-weight: 500;
+  color: var(--ink-3);
+  margin-bottom: var(--sp-4);
+  transition: color var(--dur) var(--ease), gap var(--dur) var(--ease);
+}
+
+.back:hover {
+  color: var(--accent);
+  gap: 9px;
+}
