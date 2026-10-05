@@ -17,4 +17,13 @@ jwt:
   expiration: 86400000
 
 server:
-  port: 8080
+  # Railway injects PORT at runtime; default to 8080 for local development.
+  port: ${PORT:8080}
+
+cors:
+  # Comma-separated list of allowed browser origins. Defaults cover local Vite
+  # (5173) and CRA (3000). On Railway, set CORS_ALLOWED_ORIGINS to the exact
+  # frontend origin(s), e.g. http://localhost:5173 while the UI runs locally.
+  # Never use "*" here: authentication uses credentials (Authorization header)
+  # and browsers reject wildcard origins when credentials are allowed.
+  allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:5173,http://localhost:3000}

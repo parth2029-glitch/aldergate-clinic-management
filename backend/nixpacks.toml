@@ -1,0 +1,16 @@
+[providers]
+# Pin JDK 21: Spring Boot 3.5 + java.version 21 require a 21 toolchain.
+# Without this, Nixpacks may default to a different JDK and the build fails.
+aptPkgs = ["openjdk-21-jdk"]
+
+[variables]
+NIXPACKS_JDK_VERSION = "21"
+
+[phases.build]
+# Skip tests during the Railway build: the suite is @SpringBootTest against a
+# live MongoDB and would write test fixtures into the real Atlas database on
+# every deploy. Run tests explicitly instead (see report).
+cmds = ["chmod +x mvnw", "./mvnw -B -DskipTests package"]
+
+[start]
+cmd = "java -Dserver.port=$PORT -jar target/*.jar"

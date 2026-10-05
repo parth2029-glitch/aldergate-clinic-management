@@ -1,5 +1,17 @@
 export const TOKEN_KEY = "aldergate.token";
 
+// Base URL of the Spring Boot backend. Set VITE_API_URL in frontend/.env to
+// point local `npm run dev` at the deployed Railway backend, e.g.
+//   VITE_API_URL=https://<RAILWAY-BACKEND-DOMAIN>
+// When unset, requests stay relative ("/api/...") so the Vite dev proxy
+// (vite.config.js) forwards them to a local backend at http://localhost:8080.
+export const API_BASE_URL = (import.meta.env.VITE_API_URL ?? "").replace(/\/$/, "");
+
+export function resolveUrl(path) {
+  if (/^https?:\/\//i.test(path)) return path;
+  return `${API_BASE_URL}${path}`;
+}
+
 export class ApiError extends Error {
   constructor(status, error, message, fields) {
     super(message);
@@ -31,7 +43,7 @@ export async function request(path, options = {}) {
   }
 
   try {
-    const response = await fetch(path, config);
+    const response = await fetch(resolveUrl(path), config);
     
     // 204 No Content
     if (response.status === 204) {
