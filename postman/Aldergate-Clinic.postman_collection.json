@@ -1,0 +1,1418 @@
+{
+  "info": {
+    "_postman_id": "aldergate-clinic-v1",
+    "name": "Aldergate Clinic API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "Drop-in suite for Aldergate Clinic. Run folders top to bottom. See README.md."
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080"
+    },
+    {
+      "key": "patientToken",
+      "value": ""
+    },
+    {
+      "key": "doctorToken",
+      "value": ""
+    },
+    {
+      "key": "adminToken",
+      "value": ""
+    },
+    {
+      "key": "doctorId",
+      "value": ""
+    },
+    {
+      "key": "patientId",
+      "value": ""
+    },
+    {
+      "key": "appointmentId",
+      "value": ""
+    },
+    {
+      "key": "slotDate",
+      "value": "2027-03-01"
+    },
+    {
+      "key": "slotTime",
+      "value": "09:30"
+    }
+  ],
+  "item": [
+    {
+      "name": "00 - Auth",
+      "item": [
+        {
+          "name": "01 Register - New Patient (201)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/register"
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"postman.{{$timestamp}}@example.com\",\n  \"password\": \"Patient@123\",\n  \"name\": \"Postman Patient\",\n  \"age\": 30,\n  \"gender\": \"Female\",\n  \"phone\": \"+91 90000 00000\",\n  \"bloodGroup\": \"O+\",\n  \"address\": \"12 Rosewood Lane, Bengaluru 560025\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "201. Unique email via $timestamp. Saves patientToken+patientId."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('201',()=>pm.response.to.have.status(201));",
+                  "const j=pm.response.json();",
+                  "pm.test('has token',()=>pm.expect(j).to.have.property('token'));",
+                  "pm.collectionVariables.set('patientToken',j.token);",
+                  "pm.collectionVariables.set('patientId',j.user.profileId);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "02 Register - Duplicate (409)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/register"
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"n.fernandes@example.com\",\n  \"password\": \"Patient@123\",\n  \"name\": \"Dup\",\n  \"age\": 30,\n  \"gender\": \"Female\",\n  \"phone\": \"x\",\n  \"bloodGroup\": \"O+\",\n  \"address\": \"x\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('409',()=>pm.response.to.have.status(409));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "03 Register - Bad Body (400)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/register"
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"\",\n  \"password\": \"123\",\n  \"name\": \"\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('400',()=>pm.response.to.have.status(400));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "04 Login - Patient Seed (200)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login"
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"n.fernandes@example.com\",\n  \"password\": \"Patient@123\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "Fallback login if you skip register. Saves patientToken+patientId."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200',()=>pm.response.to.have.status(200));",
+                  "const j=pm.response.json();",
+                  "pm.collectionVariables.set('patientToken',j.token);",
+                  "pm.collectionVariables.set('patientId',j.user.profileId);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "05 Login - Doctor Seed (200)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login"
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"ananya.raghunathan@aldergate.clinic\",\n  \"password\": \"Doctor@123\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200',()=>pm.response.to.have.status(200));",
+                  "const j=pm.response.json();",
+                  "pm.collectionVariables.set('doctorToken',j.token);",
+                  "pm.collectionVariables.set('doctorProfileId',j.user.profileId);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "06 Login - Admin Seed (200)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login"
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@aldergate.clinic\",\n  \"password\": \"Admin@123\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200',()=>pm.response.to.have.status(200));",
+                  "const j=pm.response.json();",
+                  "pm.collectionVariables.set('adminToken',j.token);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "07 Login - Wrong Password (401)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login"
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"n.fernandes@example.com\",\n  \"password\": \"Wrong@123\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('401',()=>pm.response.to.have.status(401));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "08 Me - As Patient (200)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{patientToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/me"
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200',()=>pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "09 Me - No Token (401/403)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/me"
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('rejected',()=>pm.expect([401,403]).to.include(pm.response.code));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "01 - Doctors",
+      "item": [
+        {
+          "name": "01 List Doctors (200)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/doctors"
+            },
+            "description": "Public. Saves doctorId."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200',()=>pm.response.to.have.status(200));",
+                  "const j=pm.response.json();",
+                  "pm.test('non-empty array',()=>{pm.expect(j).to.be.an('array');pm.expect(j.length).to.be.above(0);});",
+                  "if(j&&j.length)pm.collectionVariables.set('doctorId',j[0].id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "02 Filter ?specialization=Cardiology",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/doctors?specialization=Cardiology",
+              "query": [
+                {
+                  "key": "specialization",
+                  "value": "Cardiology"
+                }
+              ]
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200',()=>pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "03 Get Doctor By ID (200)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/doctors/{{doctorId}}"
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200',()=>pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "04 Get Doctor By ID - 404",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/doctors/000000000000000000000000"
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('404',()=>pm.response.to.have.status(404));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "05 Get Slots (200)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/doctors/{{doctorId}}/slots?date={{slotDate}}",
+              "query": [
+                {
+                  "key": "date",
+                  "value": "{{slotDate}}"
+                }
+              ]
+            },
+            "description": "Sets slotDate 14 days out, picks first free slotTime."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const d=new Date();d.setDate(d.getDate()+14);",
+                  "pm.collectionVariables.set('slotDate',d.toISOString().slice(0,10));"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200',()=>pm.response.to.have.status(200));",
+                  "const j=pm.response.json();",
+                  "pm.test('has slots',()=>pm.expect(j).to.have.property('availableSlots'));",
+                  "if(j.availableSlots&&j.availableSlots.length)pm.collectionVariables.set('slotTime',j.availableSlots[0]);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "06 Get Slots - No Date (400)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/doctors/{{doctorId}}/slots"
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('400/500',()=>pm.expect([400,500]).to.include(pm.response.code));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "07 Doctor Updates Own Profile (200)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{doctorToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/doctors/me"
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"about\": \"Updated bio via Postman\",\n  \"fee\": 950.0,\n  \"room\": \"2.15\",\n  \"languages\": [\n    \"English\",\n    \"Kannada\"\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200',()=>pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "08 Doctor Patient Roster (200)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{doctorToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/doctors/patients"
+            },
+            "description": "Run AFTER booking with same doctor or list is []."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200',()=>pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "02 - Patients",
+      "item": [
+        {
+          "name": "01 Get My Profile (200)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{patientToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/patients/my"
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200',()=>pm.response.to.have.status(200));",
+                  "pm.collectionVariables.set('patientId',pm.response.json().id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "02 Update My Profile (200)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{patientToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/patients/me"
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Nadia Fernandes\",\n  \"age\": 35,\n  \"gender\": \"Female\",\n  \"phone\": \"+91 98204 71336\",\n  \"bloodGroup\": \"O+\",\n  \"address\": \"14 Rosewood Lane, Bengaluru 560025\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200',()=>pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "03 Doctor Gets Patient By ID (200/403)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{doctorToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/patients/{{patientId}}"
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 or 403',()=>pm.expect([200,403]).to.include(pm.response.code));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "03 - Appointments",
+      "item": [
+        {
+          "name": "01 Book Appointment (201)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{patientToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/appointments"
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"doctorId\": \"{{doctorId}}\",\n  \"appointmentDate\": \"{{slotDate}}\",\n  \"appointmentTime\": \"{{slotTime}}\",\n  \"reason\": \"Palpitations on exertion, three weeks\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "Needs fresh doctorId/slotDate/slotTime. Saves appointmentId."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const d=new Date();d.setDate(d.getDate()+14);",
+                  "pm.collectionVariables.set('slotDate',d.toISOString().slice(0,10));"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('201',()=>pm.response.to.have.status(201));",
+                  "const j=pm.response.json();",
+                  "pm.test('PENDING',()=>pm.expect(j.status).to.eql('PENDING'));",
+                  "pm.collectionVariables.set('appointmentId',j.id);",
+                  "pm.collectionVariables.set('doctorId',j.doctorId);",
+                  "pm.collectionVariables.set('patientId',j.patientId);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "02 Book Same Slot (409)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{patientToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/appointments"
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"doctorId\": \"{{doctorId}}\",\n  \"appointmentDate\": \"{{slotDate}}\",\n  \"appointmentTime\": \"{{slotTime}}\",\n  \"reason\": \"dup\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('409/400',()=>pm.expect([400,409]).to.include(pm.response.code));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "03 Book Past Date (400)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{patientToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/appointments"
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"doctorId\": \"{{doctorId}}\",\n  \"appointmentDate\": \"2020-01-01\",\n  \"appointmentTime\": \"09:30\",\n  \"reason\": \"past\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('400',()=>pm.expect([400]).to.include(pm.response.code));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "04 My Appointments - Patient (200)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{patientToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/appointments/my"
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200',()=>pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "05 My Appointments - Doctor (200)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{doctorToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/appointments/my"
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200',()=>pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "06 Get Appointment By ID (200)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{patientToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/appointments/{{appointmentId}}"
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200',()=>pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "07 Doctor Confirms (200)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{doctorToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/appointments/{{appointmentId}}/status"
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"CONFIRMED\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "If 403, booking doctor != seed doctor. Re-login as owning doctor."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200',()=>pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "08 Invalid Transition (400)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{doctorToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/appointments/{{appointmentId}}/status"
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"PENDING\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('400',()=>pm.expect([400]).to.include(pm.response.code));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "09 Patient Cancels (204) - RUN LAST",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{patientToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/appointments/{{appointmentId}}"
+            },
+            "description": "Cancels the booking. Re-book to test again."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('204',()=>pm.response.to.have.status(204));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "04 - Medical Records",
+      "item": [
+        {
+          "name": "01 Doctor Creates Record (201/403)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{doctorToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/medical-records"
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"patientId\": \"{{patientId}}\",\n  \"appointmentId\": \"{{appointmentId}}\",\n  \"symptoms\": \"Palpitations on exertion\",\n  \"diagnosis\": \"Benign PVCs\",\n  \"prescription\": [\n    \"Bisoprolol 1.25 mg - once daily\"\n  ],\n  \"notes\": \"ECG occasional PVCs\",\n  \"followUp\": \"Review in 3 months\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('201/403',()=>pm.expect([201,403]).to.include(pm.response.code));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "02 Patient Views Own Records (200)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{patientToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/medical-records/patient/{{patientId}}"
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200',()=>pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "03 Doctor Views Patient Records (200/403)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{doctorToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/medical-records/patient/{{patientId}}"
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200/403',()=>pm.expect([200,403]).to.include(pm.response.code));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "05 - Admin",
+      "item": [
+        {
+          "name": "01 Admin Creates Doctor (201)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/doctors"
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"newdoc.{{$timestamp}}@aldergate.clinic\",\n  \"password\": \"Doctor@123\",\n  \"name\": \"New Doc\",\n  \"specialization\": \"Cardiology\",\n  \"qualification\": \"MD\",\n  \"experience\": 10,\n  \"fee\": 800.0,\n  \"room\": \"2.20\",\n  \"about\": \"Created via Postman\",\n  \"languages\": [\n    \"English\"\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('201',()=>pm.response.to.have.status(201));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "02 Admin Lists Doctors (200)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/doctors"
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200',()=>pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "03 Patient Tries Admin Create (403)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{patientToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/doctors"
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"hack@aldergate.clinic\",\n  \"password\": \"Doctor@123\",\n  \"name\": \"Hack\",\n  \"specialization\": \"Cardiology\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('403/401',()=>pm.expect([401,403]).to.include(pm.response.code));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "06 - Negative + Security",
+      "item": [
+        {
+          "name": "01 No Token (401/403)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/appointments/my"
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('rejected',()=>pm.expect([401,403]).to.include(pm.response.code));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "02 Patient Hits Doctor Roster (403)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{patientToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/doctors/patients"
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('forbidden',()=>pm.expect([401,403]).to.include(pm.response.code));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "03 Patient Hits Admin Route (403)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{patientToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/doctors"
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('forbidden',()=>pm.expect([401,403]).to.include(pm.response.code));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
