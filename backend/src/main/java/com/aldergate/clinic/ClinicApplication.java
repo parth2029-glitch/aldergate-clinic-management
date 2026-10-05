@@ -34,9 +34,12 @@ public class ClinicApplication {
         if (uri == null || uri.isBlank()) {
             throw new IllegalStateException("""
                     MONGODB_URI is not set. This project only connects to MongoDB Atlas.
-                    Create backend/.env containing:
+                    Locally: create backend/.env containing:
                       MONGODB_URI=mongodb+srv://<user>:<password>@<cluster>.mongodb.net/aldergate
-                    (see backend/.env.example). Startup aborted instead of falling back to localhost.""");
+                    (see backend/.env.example).
+                    On Railway: add MONGODB_URI in the service Variables panel
+                    (no .env file is deployed — Railway injects real env vars).
+                    Startup aborted instead of falling back to localhost.""");
         }
     }
 
@@ -52,9 +55,11 @@ public class ClinicApplication {
         if (secret == null || secret.isBlank()) {
             throw new IllegalStateException("""
                     JWT_SECRET is not set. Tokens cannot be signed with a key from git.
-                    Create backend/.env containing:
+                    Locally: create backend/.env containing:
                       JWT_SECRET=<at-least-32-characters-random-string>
-                    (see backend/.env.example). Startup aborted.""");
+                    (see backend/.env.example).
+                    On Railway: add JWT_SECRET in the service Variables panel.
+                    Startup aborted.""");
         }
         if (secret.getBytes(java.nio.charset.StandardCharsets.UTF_8).length < 32) {
             throw new IllegalStateException(
